@@ -2,8 +2,14 @@
   "name": "fake-services-nodejs",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  
+  "_comment_build": "Changed from index.js",
+  "main": "dist/app.js",
   "scripts": {
+    "_comment_build": "Compile TypeScript files",
+    "build": "tsc",
+    "start": "node dist/app.js",
+    
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
