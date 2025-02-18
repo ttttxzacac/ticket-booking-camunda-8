@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fake-services-nodejs
+spec:
+  replicas: 2  # Run 2 instances for high availability
+  selector:
+    matchLabels:
+      app: fake-services-nodejs
+  template:
+    metadata:
+      labels:
+        app: fake-services-nodejs
+    spec:
+      containers:
+      - name: fake-services-nodejs
+        image: <YOUR_ECR_REPO>/fake-services-nodejs:latest  # TODO Replace with your AWS ECR repository
+        ports:
+        - containerPort: 3000  # Node.js service runs on port 3000
+        env:
+        - name: NODE_ENV
+          value: "production"
