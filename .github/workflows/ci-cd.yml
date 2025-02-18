@@ -3,32 +3,43 @@ name: CI/CD Pipeline for Ticket Booking System
 on:
   push:
     branches:
-      - aws-dev  # listen to aws-dev branch push
+      - aws-dev  # Trigger the workflow when pushing to the main branch
 
 jobs:
   build:
-    runs-on: ubuntu-latest # GitHub hosted Ubuntu server
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3  # pull GitHub code
+        uses: actions/checkout@v3  # Pull the latest code from GitHub
 
       - name: Set up Java
         uses: actions/setup-java@v3
         with:
           java-version: '17'
-          distribution: 'temurin'
+          distribution: 'temurin'  # Use Temurin distribution for Java
 
-      - name: Build project
-        run: mvn clean package  # run Maven build
-        working-directory: booking-service-java
+      - name: Build Java project
+        run: mvn clean package
+        working-directory: booking-service-java  # Set working directory to Java project
 
-      - name: Run Tests
-        run: mvn test  # run mvn test
-        working-directory: booking-service-java
+      - name: Run Java Tests
+        run: mvn test
+        working-directory: booking-service-java  # Run unit tests for Java
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18  # Use Node.js 18 for the TypeScript project
+
+      - name: Install dependencies & build TypeScript project
+        run: |
+          npm install
+          npm run build
+        working-directory: fake-services-nodejs  # Set working directory to Node.js project
 
   docker:
     runs-on: ubuntu-latest
-    needs: build
+    needs: build  # This job runs after the build job is successful
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -39,19 +50,31 @@ jobs:
           aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REPO }}
 
-      - name: Build and Push Docker Image
+      #  Build & push Java (Spring Boot) Docker image
+      - name: Build and Push Java Docker Image
         run: |
           docker build -t ticket-booking .
-          docker tag ticket-booking:latest ${{ secrets.ECR_REPO }}:latest
-          docker push ${{ secrets.ECR_REPO }}:latest
-        working-directory: booking-service-java
+          docker tag ticket-booking:latest ${{ secrets.ECR_REPO }}/ticket-booking:latest
+          docker push ${{ secrets.ECR_REPO }}/ticket-booking:latest
+        working-directory: booking-service-java  # Ensure we build from the correct directory
+
+      #  Build & push Node.js (TypeScript) Docker image
+      - name: Build and Push Node.js Docker Image
+        run: |
+          docker build -t fake-services-nodejs .
+          docker tag fake-services-nodejs:latest ${{ secrets.ECR_REPO }}/fake-services-nodejs:latest
+          docker push ${{ secrets.ECR_REPO }}/fake-services-nodejs:latest
+        working-directory: fake-services-nodejs  # Ensure we build from the correct directory
 
   deploy:
     runs-on: ubuntu-latest
-    needs: docker
+    needs: docker  # This job runs after the docker job is successful
     steps:
-      - name: Configure Kubernetes
+      - name: Configure AWS EKS
         run: aws eks --region ${{ secrets.AWS_REGION }} update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAME }}
 
-      - name: Deploy to EKS
-        run: kubectl apply -f k8s/deployment.yaml
+      - name: Deploy Java Service to EKS
+        run: kubectl apply -f k8s/deployment.yaml  # Deploy Java service to Kubernetes
+
+      - name: Deploy Node.js Service to EKS
+        run: kubectl apply -f k8s/fake-services-nodejs-deployment.yaml  # Deploy Node.js service to Kubernetes
