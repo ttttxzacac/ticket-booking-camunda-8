@@ -29,7 +29,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18  # Use Node.js 18 for the TypeScript project
+          node-version: 14  # Use Node.js 14 for the TypeScript project
 
       - name: Install dependencies & build TypeScript project
         run: |
