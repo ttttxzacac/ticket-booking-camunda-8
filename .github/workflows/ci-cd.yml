@@ -20,9 +20,11 @@ jobs:
 
       - name: Build project
         run: mvn clean package  # run Maven build
+        working-directory: booking-service-java
 
       - name: Run Tests
         run: mvn test  # run mvn test
+        working-directory: booking-service-java
 
   docker:
     runs-on: ubuntu-latest
@@ -42,6 +44,7 @@ jobs:
           docker build -t ticket-booking .
           docker tag ticket-booking:latest ${{ secrets.ECR_REPO }}:latest
           docker push ${{ secrets.ECR_REPO }}:latest
+        working-directory: booking-service-java
 
   deploy:
     runs-on: ubuntu-latest
