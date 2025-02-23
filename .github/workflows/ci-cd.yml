@@ -3,78 +3,89 @@ name: CI/CD Pipeline for Ticket Booking System
 on:
   push:
     branches:
-      - aws-dev  # Trigger the workflow when pushing to the main branch
+      - aws-dev  # 当代码 push 到 aws-dev 分支时触发
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3  # Pull the latest code from GitHub
+        uses: actions/checkout@v3  # 拉取最新代码
 
       - name: Set up Java
         uses: actions/setup-java@v3
         with:
           java-version: '11'
-          distribution: 'temurin'  # Use Temurin distribution for Java
+          distribution: 'temurin'  # 使用 Temurin 发行版的 Java 11
 
       - name: Build Java project
-        run: mvn clean package
-        working-directory: booking-service-java  # Set working directory to Java project
+        run: mvn clean package -DskipTests
+        working-directory: booking-service-java  # 在 Java 目录下运行
 
       - name: Run Java Tests
         run: mvn test
-        working-directory: booking-service-java  # Run unit tests for Java
+        working-directory: booking-service-java  # 运行 Java 单元测试
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 14  # Use Node.js 14 for the TypeScript project
+          node-version: 14  # 使用 Node.js 14
 
       - name: Install dependencies & build TypeScript project
         run: |
           npm install
           npm run build
-        working-directory: fake-services-nodejs  # Set working directory to Node.js project
+        working-directory: fake-services-nodejs  # 在 Node.js 目录下运行
 
   docker:
     runs-on: ubuntu-latest
-    needs: build  # This job runs after the build job is successful
+    needs: build  # 依赖 build 任务成功后执行
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Log in to AWS ECR
-        run: |
-          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REPO }}
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
-      #  Build & push Java (Spring Boot) Docker image
+      - name: Log in to Amazon ECR
+        run: |
+          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}
+
+      # 构建 & 推送 Java (Spring Boot) Docker 镜像
       - name: Build and Push Java Docker Image
         run: |
-          docker build -t ticket-booking .
-          docker tag ticket-booking:latest ${{ secrets.ECR_REPO }}/ticket-booking:latest
-          docker push ${{ secrets.ECR_REPO }}/ticket-booking:latest
-        working-directory: booking-service-java  # Ensure we build from the correct directory
+          docker build -t booking-service .
+          docker tag booking-service:latest ${{ secrets.ECR_REGISTRY }}/booking-service:latest
+          docker push ${{ secrets.ECR_REGISTRY }}/booking-service:latest
+        working-directory: booking-service-java
 
-      #  Build & push Node.js (TypeScript) Docker image
+      # 构建 & 推送 Node.js (TypeScript) Docker 镜像
       - name: Build and Push Node.js Docker Image
         run: |
           docker build -t fake-services-nodejs .
-          docker tag fake-services-nodejs:latest ${{ secrets.ECR_REPO }}/fake-services-nodejs:latest
-          docker push ${{ secrets.ECR_REPO }}/fake-services-nodejs:latest
-        working-directory: fake-services-nodejs  # Ensure we build from the correct directory
+          docker tag fake-services-nodejs:latest ${{ secrets.ECR_REGISTRY }}/fake-services-nodejs:latest
+          docker push ${{ secrets.ECR_REGISTRY }}/fake-services-nodejs:latest
+        working-directory: fake-services-nodejs
 
   deploy:
     runs-on: ubuntu-latest
-    needs: docker  # This job runs after the docker job is successful
+    needs: docker  # 依赖 docker 任务成功后执行
     steps:
-      - name: Configure AWS EKS
-        run: aws eks --region ${{ secrets.AWS_REGION }} update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAME }}
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Deploy Java Service to EKS
-        run: kubectl apply -f k8s/deployment.yaml  # Deploy Java service to Kubernetes
+      - name: Deploy Java Service to ECS
+        run: |
+          aws ecs update-service --cluster ${{ secrets.ECS_CLUSTER_NAME }} --service booking-service --force-new-deployment
 
-      - name: Deploy Node.js Service to EKS
-        run: kubectl apply -f k8s/fake-services-nodejs-deployment.yaml  # Deploy Node.js service to Kubernetes
+      - name: Deploy Node.js Service to ECS
+        run: |
+          aws ecs update-service --cluster ${{ secrets.ECS_CLUSTER_NAME }} --service fake-services-nodejs --force-new-deployment
