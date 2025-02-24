@@ -12,7 +12,7 @@ COPY src ./src
 RUN mvn clean package spring-boot:repackage -DskipTests
 
 # Use a smaller JDK runtime image
-FROM eclipse-temurin:11-jre
+FROM eclipse-temurin:17-jre
 
 # Set working directory
 WORKDIR /app
