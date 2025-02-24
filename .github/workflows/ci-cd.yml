@@ -104,9 +104,7 @@ jobs:
       #  Deploy RabbitMQ service to ECS
       - name: Deploy RabbitMQ Service to ECS
         run: |
-          aws ecs create-service --cluster ${{ secrets.ECS_CLUSTER_NAME }} \
-            --service-name rabbitmq-service \
-            --task-definition rabbitmq-task \
-            --desired-count 1          
+          aws ecs update-service --cluster ${{ secrets.ECS_CLUSTER_NAME }} --service rabbitmq-service --force-new-deployment
+   
 
 
