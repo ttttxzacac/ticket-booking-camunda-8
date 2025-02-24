@@ -1,26 +1,26 @@
-# Use Eclipse Temurin JDK 11 as the base image
-FROM eclipse-temurin:11-jdk as builder
+# Use Maven with JDK 11 as the builder image
+FROM maven:3.8.6-eclipse-temurin-11 AS builder
 
 # Set working directory
 WORKDIR /app
 
-# Copy Maven project files
+# Copy project files
 COPY pom.xml .
 COPY src ./src
 
-# Build the application using Maven
+# Build the application
 RUN mvn clean package -DskipTests
 
-# Use a smaller image to run the application
+# Use a smaller JDK runtime image
 FROM eclipse-temurin:11-jre
 
-# Set working directory inside the container
+# Set working directory
 WORKDIR /app
 
-# Copy the built jar file from the builder stage
+# Copy built JAR from builder stage
 COPY --from=builder /app/target/*.jar app.jar
 
-# Expose port 8080 (Spring Boot default)
+# Expose application port
 EXPOSE 8080
 
 # Run the application
