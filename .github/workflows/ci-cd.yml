@@ -71,6 +71,15 @@ jobs:
           docker push ${{ secrets.ECR_REGISTRY }}/ticket-booking/ticket-booking-repo:fake-services-nodejs-latest
         working-directory: fake-services-nodejs
 
+      #  Build & push the RabbitMQ Docker image (using the official RabbitMQ image)
+      - name: Build and Push RabbitMQ Docker Image
+        run: |
+          docker pull rabbitmq:3-management
+          docker tag rabbitmq:3-management ${{ secrets.ECR_REGISTRY }}/ticket-booking/ticket-booking-repo:rabbitmq-latest
+          docker push ${{ secrets.ECR_REGISTRY }}/ticket-booking/ticket-booking-repo:rabbitmq-latest
+
+
+
   deploy:
     runs-on: ubuntu-latest
     needs: docker  # This job depends on the successful execution of the docker job
@@ -91,6 +100,13 @@ jobs:
         run: |
           aws ecs update-service --cluster ${{ secrets.ECS_CLUSTER_NAME }} --service fake-services-nodejs --force-new-deployment
 
-          
+
+      #  Deploy RabbitMQ service to ECS
+      - name: Deploy RabbitMQ Service to ECS
+        run: |
+          aws ecs create-service --cluster ${{ secrets.ECS_CLUSTER_NAME }} \
+            --service-name rabbitmq-service \
+            --task-definition rabbitmq-task \
+            --desired-count 1          
 
 
