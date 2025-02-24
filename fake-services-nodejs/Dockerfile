@@ -7,6 +7,7 @@ WORKDIR /usr/src/app
 # Copy package.json and package-lock.json and install dependencies
 COPY package*.json ./
 RUN npm install
+RUN npm install -g typescript  # install ts
 
 # Copy all source code
 COPY . .
@@ -15,4 +16,4 @@ COPY . .
 RUN npm run build
 
 # Run the application (RUN npm run build will compile src/app.ts into dist/app.js)
-CMD ["node", "dist/app.js"] 
+CMD ["node", "dist/app.js"]
