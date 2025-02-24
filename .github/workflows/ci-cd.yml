@@ -82,10 +82,8 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Deploy Java Service to ECS
+      - name: Deploy Java Service +Node.js to ECS
         run: |
-          aws ecs update-service --cluster ${{ secrets.ECS_CLUSTER_NAME }} --service booking-service-java --force-new-deployment
+          aws ecs update-service --cluster ${{ secrets.ECS_CLUSTER_NAME }} --service ticketBookingClusterService --force-new-deployment
 
-      - name: Deploy Node.js Service to ECS
-        run: |
-          aws ecs update-service --cluster ${{ secrets.ECS_CLUSTER_NAME }} --service fake-services-nodejs --force-new-deployment
+
