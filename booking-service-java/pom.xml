@@ -56,6 +56,13 @@
 				<configuration>
 					<mainClass>io.berndruecker.ticketbooking.TicketBookingApplication</mainClass>
 				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 
 			<!-- Maven JAR Plugin -->
