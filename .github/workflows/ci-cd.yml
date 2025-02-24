@@ -59,7 +59,7 @@ jobs:
       - name: Build and Push Java Docker Image
         run: |
           docker build -t booking-service .
-          docker tag booking-service:latest ${{ secrets.ECR_REGISTRY }}/booking-service:latest
+          docker tag booking-service:latest ${{ secrets.ECR_REGISTRY }}/ticket-booking/ticket-booking-repo:booking-service-latest
           docker push ${{ secrets.ECR_REGISTRY }}/booking-service:latest
         working-directory: booking-service-java
 
@@ -67,7 +67,7 @@ jobs:
       - name: Build and Push Node.js Docker Image
         run: |
           docker build -t fake-services-nodejs .
-          docker tag fake-services-nodejs:latest ${{ secrets.ECR_REGISTRY }}/fake-services-nodejs:latest
+          docker tag fake-services-nodejs:latest ${{ secrets.ECR_REGISTRY }}/ticket-booking/ticket-booking-repo:fake-services-nodejs-latest
           docker push ${{ secrets.ECR_REGISTRY }}/fake-services-nodejs:latest
         working-directory: fake-services-nodejs
 
