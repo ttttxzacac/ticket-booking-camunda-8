@@ -1,5 +1,5 @@
 # Use Maven with JDK 11 as the builder image
-FROM maven:3.8.6-eclipse-temurin-11 AS builder
+FROM maven:3.8.6-eclipse-temurin-17 AS builder
 
 # Set working directory
 WORKDIR /app
