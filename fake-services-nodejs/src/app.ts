@@ -38,7 +38,7 @@ const queuePaymentRequest = 'paymentRequest';
 const queuePaymentResponse = 'paymentResponse';
 
 // amqp://localhost
-amqp.connect('amqp://guest:guest@rabbitmq-service:5672', function(error0, connection) {
+amqp.connect('amqp://guest:guest@rabbitmq-service.ticketbooking.local:5672', function(error0, connection) {
   if (error0) {
     throw error0;
   }
