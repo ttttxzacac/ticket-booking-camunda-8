@@ -37,7 +37,11 @@ var amqp = require('amqplib/callback_api');
 const queuePaymentRequest = 'paymentRequest';
 const queuePaymentResponse = 'paymentResponse';
 
-amqp.connect('amqp://localhost', function(error0, connection) {
+const RABBITMQ_HOST = process.env.RABBITMQ_HOST;
+const RABBITMQ_USER = process.env.RABBITMQ_USER;
+const RABBITMQ_PASSWORD = process.env.RABBITMQ_PASSWORD;
+// I have modified the code, it can read parameters from .env
+amqp.connect(`amqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@${RABBITMQ_HOST}`, function(error0, connection) {
   if (error0) {
     throw error0;
   }

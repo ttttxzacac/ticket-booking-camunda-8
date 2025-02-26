@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fakeservices-config
+  namespace: ticketbooking
+# 
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fakeservices
+  namespace: ticketbooking
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fakeservices
+  template:
+    metadata:
+      labels:
+        app: fakeservices
+    spec:
+      containers:
+      - name: fakeservices
+        image: icarusgao/fakeservices_arm:k8s
+        ports:
+        - containerPort: 3000
+        envFrom:
+        - configMapRef:
+            name: fakeservices-config 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fakeservices
+  namespace: ticketbooking
+spec:
+  selector:
+    app: fakeservices
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+  type: ClusterIP

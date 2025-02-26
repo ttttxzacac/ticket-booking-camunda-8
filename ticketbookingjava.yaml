@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ticket-booking            # artifactId 
+  namespace: ticketbooking      
+  labels:
+    app: ticket-booking
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ticket-booking
+  template:
+    metadata:
+      labels:
+        app: ticket-booking
+    spec:
+      containers:
+      - name: ticket-booking
+        image: icarusgao/ticketbookingjava_arm:k8s
+        ports:
+        - containerPort: 8080                  
+        env:
+        - name: SPRING_APPLICATION_NAME
+          value: "ticket-booking"               
+        - name: SPRING_PROFILES_ACTIVE
+          value: "prod"                         
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ticket-booking
+  namespace: ticketbooking
+spec:
+  selector:
+    app: ticket-booking
+  ports:
+  - protocol: TCP
+    port: 80                  
+    targetPort: 8080      
+  type: ClusterIP

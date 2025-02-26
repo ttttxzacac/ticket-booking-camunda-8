@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
+
 @Component
 public class GenerateTicketAdapter {
 
@@ -20,7 +22,10 @@ public class GenerateTicketAdapter {
 
   // This should be of course injected and depends on the environment.
   // Hard coded for simplicity here
-  public static String ENDPOINT = "http://localhost:3000/ticket";
+  //public static String ENDPOINT = "http://localhost:3000/ticket";
+
+  @Value("${ticketbooking.payment.endpoint}")
+  private String ENDPOINT;
 
   @Autowired
   private RestTemplate restTemplate;
