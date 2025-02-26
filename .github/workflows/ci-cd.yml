@@ -92,6 +92,17 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
 
+      #  Deploy RabbitMQ service to ECS
+      - name: Deploy RabbitMQ Service to ECS
+        run: |
+          aws ecs update-service --cluster ${{ secrets.ECS_CLUSTER_NAME }} --service rabbitmq-service --force-new-deployment --desired-count 1
+
+      # wait RabbitMQ to finish
+      - name: Wait for RabbitMQ Service to be stable
+        run: |
+          aws ecs wait services-stable --cluster ${{ secrets.ECS_CLUSTER_NAME }} --services rabbitmq-service
+
+
       - name: Deploy Java Service to ECS
         run: |
           aws ecs update-service --cluster ${{ secrets.ECS_CLUSTER_NAME }} --service booking-service-java --force-new-deployment --desired-count 1
@@ -101,10 +112,5 @@ jobs:
           aws ecs update-service --cluster ${{ secrets.ECS_CLUSTER_NAME }} --service fake-services-nodejs --force-new-deployment --desired-count 1
 
 
-      #  Deploy RabbitMQ service to ECS
-      - name: Deploy RabbitMQ Service to ECS
-        run: |
-          aws ecs update-service --cluster ${{ secrets.ECS_CLUSTER_NAME }} --service rabbitmq-service --force-new-deployment --desired-count 1
-   
 
 
