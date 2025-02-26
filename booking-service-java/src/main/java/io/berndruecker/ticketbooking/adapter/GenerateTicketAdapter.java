@@ -22,7 +22,7 @@ public class GenerateTicketAdapter {
   // Hard coded for simplicity here
 
   //  public static String ENDPOINT = "http://localhost:3000/ticket";
-  public static String ENDPOINT = "http://fake-services-nodejs:3000/ticket";
+  public static String ENDPOINT = "http://fake-services-nodejs.local:3000/ticket";
 
   @Autowired
   private RestTemplate restTemplate;
