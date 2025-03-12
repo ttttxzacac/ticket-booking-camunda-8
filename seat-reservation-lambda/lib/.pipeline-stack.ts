@@ -9,10 +9,10 @@ export class PipelineStack extends cdk.Stack {
     super(scope, id, props);
 
     const fn = new lambda.Function(this, 'SeatReservationLambda', {
+      functionName: 'seat-reservation-lambda',
       runtime: lambda.Runtime.NODEJS_LATEST,
       handler: 'index.handler',
-      code: lambda.Code.fromAsset(path.join('../handler')),
-      functionName: 'seat-reservation-lambda',
+      code: lambda.Code.fromAsset(path.join(__dirname, 'handler')),
       memorySize: 128,
     });
 

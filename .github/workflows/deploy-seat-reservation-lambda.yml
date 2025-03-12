@@ -50,6 +50,10 @@ jobs:
         run: cdk synth
         working-directory: seat-reservation-lambda/lib
 
+      - name: Run Jest Tests
+        run: npm test
+        working-directory: seat-reservation-lambda
+
       - name: Deploy Stack
         run: cdk deploy --require-approval never
         working-directory: seat-reservation-lambda/lib
