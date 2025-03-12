@@ -63,7 +63,7 @@ jobs:
           docker push ${{ secrets.ECR_REGISTRY }}/ticket-booking/ticket-booking-repo:booking-service-latest
         working-directory: booking-service-java
 
-      # Build & push the Node.js (TypeScript) Docker image
+#      # Build & push the Node.js (TypeScript) Docker image
 #      - name: Build and Push Node.js Docker Image
 #        run: |
 #          docker build -t fake-services-nodejs .
@@ -96,7 +96,7 @@ jobs:
 #        run: |
 #          aws ecs update-service --cluster ${{ secrets.ECS_CLUSTER_NAME }} --service rabbitmq-service --force-new-deployment --desired-count 1
 
-      # Wait for RabbitMQ to finish (no longer needed)
+#     # Wait for RabbitMQ to finish (no longer needed)
       # - name: Wait for RabbitMQ Service to be stable
       #  run: |
       #    aws ecs wait services-stable --cluster ${{ secrets.ECS_CLUSTER_NAME }} --services rabbitmq-service
