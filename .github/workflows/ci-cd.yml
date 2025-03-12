@@ -91,72 +91,75 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-
-      #  Deploy RabbitMQ service to ECS
+      # Deploy RabbitMQ service to ECS
       - name: Deploy RabbitMQ Service to ECS
         run: |
           aws ecs update-service --cluster ${{ secrets.ECS_CLUSTER_NAME }} --service rabbitmq-service --force-new-deployment --desired-count 1
 
-      # wait RabbitMQ to finish
+      # Wait for RabbitMQ to finish
       - name: Wait for RabbitMQ Service to be stable
         run: |
           aws ecs wait services-stable --cluster ${{ secrets.ECS_CLUSTER_NAME }} --services rabbitmq-service
 
-
+      # Deploy Java Service to ECS
       - name: Deploy Java Service to ECS
         run: |
           aws ecs update-service --cluster ${{ secrets.ECS_CLUSTER_NAME }} --service booking-service-java --force-new-deployment --desired-count 2
-      
+
+      # Deploy Node.js Service to ECS
       - name: Deploy Node.js Service to ECS
         run: |
           aws ecs update-service --cluster ${{ secrets.ECS_CLUSTER_NAME }} --service fake-services-nodejs --force-new-deployment --desired-count 2
 
-          - name: Configure Auto Scaling for Java Service
-              run: |
-                aws application-autoscaling register-scalable-target \
-                  --service-namespace ecs \
-                  --scalable-dimension ecs:service:DesiredCount \
-                  --resource-id service/${{ secrets.ECS_CLUSTER_NAME }}/booking-service-java \
-                  --min-capacity 2 \
-                  --max-capacity 5
-                
-                aws application-autoscaling put-scaling-policy \
-                  --service-namespace ecs \
-                  --scalable-dimension ecs:service:DesiredCount \
-                  --resource-id service/${{ secrets.ECS_CLUSTER_NAME }}/booking-service-java \
-                  --policy-name cpu-scaling-policy \
-                  --policy-type TargetTrackingScaling \
-                  --target-tracking-scaling-policy-configuration '{
-                    "TargetValue": 80.0,
-                    "PredefinedMetricSpecification": {
-                      "PredefinedMetricType": "ECSServiceAverageCPUUtilization"
-                    },
-                    "ScaleOutCooldown": 60,
-                    "ScaleInCooldown": 60
-                  }'
-    
-              - name: Configure Auto Scaling for Node.js Service
-                run: |
-                  aws application-autoscaling register-scalable-target \
-                    --service-namespace ecs \
-                    --scalable-dimension ecs:service:DesiredCount \
-                    --resource-id service/${{ secrets.ECS_CLUSTER_NAME }}/fake-services-nodejs \
-                    --min-capacity 2 \
-                    --max-capacity 5
-                  
-                  aws application-autoscaling put-scaling-policy \
-                    --service-namespace ecs \
-                    --scalable-dimension ecs:service:DesiredCount \
-                    --resource-id service/${{ secrets.ECS_CLUSTER_NAME }}/fake-services-nodejs \
-                    --policy-name cpu-scaling-policy \
-                    --policy-type TargetTrackingScaling \
-                    --target-tracking-scaling-policy-configuration '{
-                      "TargetValue": 80.0,
-                      "PredefinedMetricSpecification": {
-                        "PredefinedMetricType": "ECSServiceAverageCPUUtilization"
-                      },
-                      "ScaleOutCooldown": 60,
-                      "ScaleInCooldown": 60
-                    }'
+      # Configure Auto Scaling for Java Service
+      - name: Configure Auto Scaling for Java Service
+        run: |
+          aws application-autoscaling register-scalable-target \
+            --service-namespace ecs \
+            --scalable-dimension ecs:service:DesiredCount \
+            --resource-id service/${{ secrets.ECS_CLUSTER_NAME }}/booking-service-java \
+            --min-capacity 2 \
+            --max-capacity 5
+          
+          aws application-autoscaling put-scaling-policy \
+            --service-namespace ecs \
+            --scalable-dimension ecs:service:DesiredCount \
+            --resource-id service/${{ secrets.ECS_CLUSTER_NAME }}/booking-service-java \
+            --policy-name cpu-scaling-policy \
+            --policy-type TargetTrackingScaling \
+            --target-tracking-scaling-policy-configuration '{
+              "TargetValue": 80.0,
+              "PredefinedMetricSpecification": {
+                "PredefinedMetricType": "ECSServiceAverageCPUUtilization"
+              },
+              "ScaleOutCooldown": 60,
+              "ScaleInCooldown": 60
+            }'
+
+      # Configure Auto Scaling for Node.js Service
+      - name: Configure Auto Scaling for Node.js Service
+        run: |
+          aws application-autoscaling register-scalable-target \
+            --service-namespace ecs \
+            --scalable-dimension ecs:service:DesiredCount \
+            --resource-id service/${{ secrets.ECS_CLUSTER_NAME }}/fake-services-nodejs \
+            --min-capacity 2 \
+            --max-capacity 5
+          
+          aws application-autoscaling put-scaling-policy \
+            --service-namespace ecs \
+            --scalable-dimension ecs:service:DesiredCount \
+            --resource-id service/${{ secrets.ECS_CLUSTER_NAME }}/fake-services-nodejs \
+            --policy-name cpu-scaling-policy \
+            --policy-type TargetTrackingScaling \
+            --target-tracking-scaling-policy-configuration '{
+              "TargetValue": 80.0,
+              "PredefinedMetricSpecification": {
+                "PredefinedMetricType": "ECSServiceAverageCPUUtilization"
+              },
+              "ScaleOutCooldown": 60,
+              "ScaleInCooldown": 60
+            }'
+
 
 
