@@ -30,9 +30,9 @@ jobs:
       - name: set aws credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          aws-access-key-id: ${{ secrets[needs.aws_select.outputs.AWS_ACCESS_KEY_ID] }}
-          aws-secret-access-key: ${{ secrets[needs.aws_select.outputs.AWS_SECRET_ACCESS_KEY] }}
-          aws-region: ${{ secrets[needs.aws_select.outputs.AWS_REGION] }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
