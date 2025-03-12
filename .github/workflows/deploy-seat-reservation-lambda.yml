@@ -44,11 +44,11 @@ jobs:
 
       - name: Install dependencies
         run: npm i
-        working-directory: seat-reservation-lambda/lib
+        working-directory: seat-reservation-lambda
 
       - name: Validate CloudFormation Template
         run: cdk synth
-        working-directory: seat-reservation-lambda/lib
+        working-directory: seat-reservation-lambda/bin
 
       - name: Run Jest Tests
         run: npm test
@@ -56,4 +56,4 @@ jobs:
 
       - name: Deploy Stack
         run: cdk deploy --require-approval never
-        working-directory: seat-reservation-lambda/lib
+        working-directory: seat-reservation-lambda/bin
