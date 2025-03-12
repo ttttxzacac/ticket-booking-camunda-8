@@ -24,3 +24,12 @@ hs_err_pid*
 node_modules
 .settings
 .idea
+
+### CDK-specific ignores ###
+*.swp
+cdk.context.json
+package-lock.json
+yarn.lock
+.cdk.staging
+*.out
+~

@@ -1,0 +1,59 @@
+name: Deploy Seat Reservation Lambda Stack
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  info:
+    name: Info
+    runs-on: ubuntu-latest
+    steps:
+      - name: workflow details
+        run: |
+          echo "Workflow Name: ${{ github.workflow }}"
+          echo "Git Branch: ${{ github.ref }}"
+          echo "Git SHA: ${{ github.sha }}"
+          echo "Github Event: ${{ github.event_name }}"
+
+  deploy:
+    name: Deploy AWS CDK Stack
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: set aws credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets[needs.aws_select.outputs.AWS_ACCESS_KEY_ID] }}
+          aws-secret-access-key: ${{ secrets[needs.aws_select.outputs.AWS_SECRET_ACCESS_KEY] }}
+          aws-region: ${{ secrets[needs.aws_select.outputs.AWS_REGION] }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install AWS CDK
+        run: npm i -g aws-cdk
+
+      - name: Install dependencies
+        run: npm i
+        working-directory: seat-reservation-lambda/lib
+
+      - name: Validate CloudFormation Template
+        run: cdk synth
+        working-directory: seat-reservation-lambda/lib
+
+      - name: Run Jest Tests
+        run: npm test
+        working-directory: seat-reservation-lambda
+
+      - name: Deploy Stack
+        run: cdk deploy --require-approval never
+        working-directory: seat-reservation-lambda/lib
