@@ -11,6 +11,7 @@ import org.springframework.web.client.RestTemplate;
 
 import io.camunda.zeebe.spring.client.EnableZeebeClient;
 import io.camunda.zeebe.spring.client.annotation.ZeebeDeployment;
+import software.amazon.awssdk.services.sqs.SqsClient;
 
 @SpringBootApplication
 @EnableZeebeClient
@@ -29,6 +30,11 @@ public class TicketBookingApplication {
   @Bean
   public Queue paymentResponseQueue(){
     return new Queue("paymentResponse",true);
+  }
+
+  @Bean
+  public SqsClient sqsClient() {
+    return SqsClient.create();
   }
 
 }
