@@ -25,4 +25,11 @@ node_modules
 .settings
 .idea
 
-cdk.out
+### CDK-specific ignores ###
+*.swp
+cdk.context.json
+package-lock.json
+yarn.lock
+.cdk.staging
+*.out
+~
