@@ -47,13 +47,13 @@ jobs:
         working-directory: seat-reservation-lambda
 
       - name: Validate CloudFormation Template
-        run: cdk synth
-        working-directory: seat-reservation-lambda/bin
+        run: cdk synth --app "npx ts-node bin/.pipeline.ts"
+        working-directory: seat-reservation-lambda
 
       - name: Run Jest Tests
         run: npm test
         working-directory: seat-reservation-lambda
 
       - name: Deploy Stack
-        run: cdk deploy --require-approval never
-        working-directory: seat-reservation-lambda/bin
+        run: cdk deploy --app "npx ts-node bin/.pipeline.ts" --require-approval never
+        working-directory: seat-reservation-lambda
