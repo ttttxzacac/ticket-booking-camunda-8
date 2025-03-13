@@ -18,11 +18,9 @@ test('Lambda Created', () => {
      MemorySize: 128, 
    });
 
-   test('API Gateway Created', () => {
-    const app = new cdk.App();
-    const stack = new Pipeline.PipelineStack(app, 'MyTestStack');
-    const template = Template.fromStack(stack);
- 
-    template.hasResource('AWS::ApiGateway::LambdaRestApi', {});
- });
+  template.hasResource('AWS::ApiGateway::RestApi', {});
+
+  template.hasOutput('ApiGatewayUrlOutput', {
+    Export: { Name: 'SeatReservationLambdaRestApiUrl' },
+  });
 });
