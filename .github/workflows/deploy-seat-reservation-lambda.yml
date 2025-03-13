@@ -52,6 +52,10 @@ jobs:
         run: npm i
         working-directory: seat-reservation-lambda
 
+      - name: Bootstrap AWS CDK
+        run: cdk bootstrap aws://515966493420/${{ secrets.AWS_REGION }}
+        working-directory: seat-reservation-lambda
+
       - name: Validate CloudFormation Template
         run: cdk synth --app "npx ts-node bin/.pipeline.ts"
         working-directory: seat-reservation-lambda
@@ -63,5 +67,3 @@ jobs:
       - name: Deploy Stack
         run: cdk deploy --app "npx ts-node bin/.pipeline.ts" --require-approval never
         working-directory: seat-reservation-lambda
-        env:
-          CDK_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
