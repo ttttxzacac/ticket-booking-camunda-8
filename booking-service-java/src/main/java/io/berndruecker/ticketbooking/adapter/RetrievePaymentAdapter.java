@@ -5,6 +5,7 @@ import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.spring.client.annotation.JobWorker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.services.sqs.SqsClient;
@@ -23,12 +24,9 @@ public class RetrievePaymentAdapter {
     @Value("${aws.sqs.paymentRequestQueueUrl}")
     private String paymentRequestQueueUrl;
 
-    private final SqsClient sqsClient;
+    @Autowired
+    private SqsClient sqsClient;
 
-    // Injecting the AWS SQS client via the constructor
-    public RetrievePaymentAdapter() {
-        this.sqsClient = SqsClient.create();
-    }
 
     @JobWorker(type = "retrieve-payment")
     public Map<String, Object> retrievePayment(final ActivatedJob job) {
