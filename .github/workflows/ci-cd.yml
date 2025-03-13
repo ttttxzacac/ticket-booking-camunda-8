@@ -105,7 +105,7 @@ jobs:
       # Deploy Java Service to ECS
       - name: Deploy Java Service to ECS
         run: |
-          aws ecs update-service --cluster ${{ secrets.ECS_CLUSTER_NAME }} --service booking-service-java --force-new-deployment --desired-count 2
+          aws ecs update-service --cluster ${{ secrets.ECS_CLUSTER_NAME }} --service booking-service-java --force-new-deployment --desired-count 1
 
 #      # Deploy Node.js Service to ECS
 #      - name: Deploy Node.js Service to ECS
@@ -119,8 +119,8 @@ jobs:
             --service-namespace ecs \
             --scalable-dimension ecs:service:DesiredCount \
             --resource-id service/${{ secrets.ECS_CLUSTER_NAME }}/booking-service-java \
-            --min-capacity 2 \
-            --max-capacity 5
+            --min-capacity 1 \
+            --max-capacity 2
           
           aws application-autoscaling put-scaling-policy \
             --service-namespace ecs \
