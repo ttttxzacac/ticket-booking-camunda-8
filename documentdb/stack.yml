@@ -61,7 +61,6 @@ Resources:
       MasterUsername: !Ref MasterUser
       MasterUserPassword: !Sub '{{resolve:secretsmanager:${CloudFormationCreatedSecret}:SecretString:password}}'
       EngineVersion: 4.0.0
-      EnableIAMDatabaseAuthentication: true
 
   DBInstance:
     Type: "AWS::DocDB::DBInstance"
