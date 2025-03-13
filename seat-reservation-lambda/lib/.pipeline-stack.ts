@@ -11,8 +11,7 @@ export class SeatReservationLambdaStack extends cdk.Stack {
     super(scope, id, props);
 
     const vpc = ec2.Vpc.fromLookup(this, 'ImportedVPC', {
-      isDefault: true,
-      vpcId: 'vpc-0316cf747ad31953a',
+      isDefault: true
     });
 
     const vpcEndpoint = new ec2.InterfaceVpcEndpoint(this, 'ApiGatewayVpcEndpoint', {
