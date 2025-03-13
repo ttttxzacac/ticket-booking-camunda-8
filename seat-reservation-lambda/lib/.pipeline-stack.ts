@@ -16,15 +16,20 @@ export class SeatReservationLambdaStack extends cdk.Stack {
       memorySize: 128,
     });
 
-    const api = new apigw.LambdaRestApi(this, `ApiGwEndpoint`, {
-      handler: fn,
+    const api = new apigw.RestApi(this, 'SeatReservationApi', {
       restApiName: 'SeatReservationApi',
+      deployOptions: {
+        stageName: 'v1',
+      },
     });
+
+    const reservationResource = api.root.addResource('seat-reservation');
+    reservationResource.addMethod('POST', new apigw.LambdaIntegration(fn));
 
     new cdk.CfnOutput(this, 'ApiGatewayUrlOutput', {
       value: api.url,
       description: 'The endpoint for the API Gateway triggering the Lambda function',
-      exportName: 'SeatReservationLambdaRestApiUrl'
+      exportName: 'SeatReservationRestApiUrl'
     });
   }
 }
