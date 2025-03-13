@@ -31,7 +31,7 @@ public class PaymentSqsReceiver {
   @Value("${aws.sqs.paymentResponseQueueUrl}")
   private String paymentResponseQueueUrl;
 
-  public PaymentSqsReceiver(@Qualifier("zeebeClientLifecycle") ZeebeClient client, ObjectMapper objectMapper, SqsClient sqsClient) {
+  public PaymentSqsReceiver(ZeebeClient client, ObjectMapper objectMapper, SqsClient sqsClient) {
     this.client = client;
     this.objectMapper = objectMapper;
     this.sqsClient = sqsClient;
@@ -44,8 +44,8 @@ public class PaymentSqsReceiver {
     // 1. Get messages from SQS
     ReceiveMessageRequest receiveMessageRequest = ReceiveMessageRequest.builder()
             .queueUrl(paymentResponseQueueUrl)
-            .maxNumberOfMessages(5)  // 最多批量拉取 5 条消息
-            .waitTimeSeconds(2)  // 等待 2 秒
+            .maxNumberOfMessages(4)
+            .waitTimeSeconds(2)
             .build();
 
     List<Message> messages = sqsClient.receiveMessage(receiveMessageRequest).messages();
