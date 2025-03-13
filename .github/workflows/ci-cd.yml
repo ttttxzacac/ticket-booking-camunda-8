@@ -73,11 +73,11 @@ jobs:
 #        working-directory: fake-services-nodejs
 
       #  Build & push the RabbitMQ Docker image (using the official RabbitMQ image)
-      - name: Build and Push RabbitMQ Docker Image
-        run: |
-          docker pull rabbitmq:3-management
-          docker tag rabbitmq:3-management ${{ secrets.ECR_REGISTRY }}/ticket-booking/ticket-booking-repo:rabbitmq-latest
-          docker push ${{ secrets.ECR_REGISTRY }}/ticket-booking/ticket-booking-repo:rabbitmq-latest
+#      - name: Build and Push RabbitMQ Docker Image
+#        run: |
+#          docker pull rabbitmq:3-management
+#          docker tag rabbitmq:3-management ${{ secrets.ECR_REGISTRY }}/ticket-booking/ticket-booking-repo:rabbitmq-latest
+#          docker push ${{ secrets.ECR_REGISTRY }}/ticket-booking/ticket-booking-repo:rabbitmq-latest
 
 
 
