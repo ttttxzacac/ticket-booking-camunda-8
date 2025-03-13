@@ -10,15 +10,21 @@ export class PipelineStack extends cdk.Stack {
 
     const fn = new lambda.Function(this, 'SeatReservationLambda', {
       functionName: 'seat-reservation-lambda',
-      runtime: lambda.Runtime.NODEJS_LATEST,
+      runtime: lambda.Runtime.NODEJS_18_X,
       handler: 'index.handler',
       code: lambda.Code.fromAsset(path.join(__dirname, 'handler')),
       memorySize: 128,
     });
 
-    new apigw.LambdaRestApi(this, `ApiGwEndpoint`, {
+    const api = new apigw.LambdaRestApi(this, `ApiGwEndpoint`, {
       handler: fn,
       restApiName: 'SeatReservationApi',
+    });
+
+    new cdk.CfnOutput(this, 'ApiGatewayUrlOutput', {
+      value: api.url,
+      description: 'The endpoint for the API Gateway triggering the Lambda function',
+      exportName: 'SeatReservationLambdaRestApiUrl'
     });
   }
 }
