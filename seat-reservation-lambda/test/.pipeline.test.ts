@@ -20,6 +20,6 @@ test('Lambda Created', () => {
   template.hasResource('AWS::ApiGateway::RestApi', {});
 
   template.hasOutput('ApiGatewayUrlOutput', {
-    Export: { Name: 'SeatReservationLambdaRestApiUrl' },
+    Export: { Name: 'SeatReservationRestApiUrl' },
   });
 });
