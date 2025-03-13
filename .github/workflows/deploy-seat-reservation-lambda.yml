@@ -68,4 +68,5 @@ jobs:
         run: cdk deploy --app "npx ts-node bin/.pipeline.ts" --require-approval never
         working-directory: seat-reservation-lambda
         env:
+          CDK_DEFAULT_ACCOUNT: 515966493420
           CDK_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
