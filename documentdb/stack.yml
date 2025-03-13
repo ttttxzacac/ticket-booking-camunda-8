@@ -20,7 +20,7 @@ Parameters:
     ConstraintDescription: "Must begin with a letter and contain only alphanumeric characters."
 
   MasterUser:
-    Default: "admin"
+    Default: "admin1"
     NoEcho: true
     Description: "The database admin account username"
     Type: "String"
