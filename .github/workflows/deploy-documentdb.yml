@@ -1,4 +1,4 @@
-name: Deploy Seat Reservation Lambda Stack
+name: Deploy DocumentDB Stack
 
 on:
   push:
