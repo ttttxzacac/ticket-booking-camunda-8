@@ -52,6 +52,7 @@ Resources:
         SecretStringTemplate: !Sub '{"username": "${MasterUser}"}'
         GenerateStringKey: password
         PasswordLength: 32
+        ExcludePunctuation: true
 
   DBCluster:
     Type: "AWS::DocDB::DBCluster"
