@@ -107,7 +107,7 @@ jobs:
         run: |
           aws ecs update-service --cluster ${{ secrets.ECS_CLUSTER_NAME }} --service booking-service-java --force-new-deployment --desired-count 1
 
-#      # Deploy Node.js Service to ECS
+#      # Deploy Node.js Service to ECS.
 #      - name: Deploy Node.js Service to ECS
 #        run: |
 #          aws ecs update-service --cluster ${{ secrets.ECS_CLUSTER_NAME }} --service fake-services-nodejs --force-new-deployment --desired-count 2
