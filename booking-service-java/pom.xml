@@ -46,6 +46,15 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+
+		<dependency>
+			<groupId>software.amazon.awssdk</groupId>
+			<artifactId>sqs</artifactId>
+			<version>2.20.132</version>
+		</dependency>
+
+
+
 	</dependencies>
 
 	<build>
