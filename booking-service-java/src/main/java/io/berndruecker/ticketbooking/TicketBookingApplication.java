@@ -1,5 +1,6 @@
 package io.berndruecker.ticketbooking;
 
+import com.rabbitmq.tools.json.JSONUtil;
 import io.camunda.zeebe.client.ZeebeClient;
 import io.camunda.zeebe.spring.client.annotation.Deployment;
 import org.springframework.amqp.core.Queue;
@@ -18,6 +19,7 @@ import io.camunda.zeebe.spring.client.annotation.ZeebeDeployment;
 public class TicketBookingApplication {
 
   public static void main(String[] args) {
+    System.out.println("running11");
     SpringApplication.run(TicketBookingApplication.class, args);
   }
 
