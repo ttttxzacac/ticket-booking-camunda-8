@@ -40,4 +40,13 @@ public class TicketBookingApplication {
             .build();
   }
 
+  @Bean
+  public ZeebeClient zeebeClient() {
+    return ZeebeClient.newClientBuilder()
+            .gatewayAddress("zeebe-service.ticketbooking.local:26500")
+            .usePlaintext()
+            .build();
+  }
+
+
 }
