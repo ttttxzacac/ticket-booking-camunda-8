@@ -31,7 +31,7 @@ public class PaymentSqsReceiver {
   @Value("${aws.sqs.paymentResponseQueueUrl}")
   private String paymentResponseQueueUrl;
 
-  public PaymentSqsReceiver(ZeebeClient client, ObjectMapper objectMapper, SqsClient sqsClient) {
+  public PaymentSqsReceiver(@Qualifier("zeebeClientObjectFactory") ZeebeClient client, ObjectMapper objectMapper, SqsClient sqsClient) {
     this.client = client;
     this.objectMapper = objectMapper;
     this.sqsClient = sqsClient;
