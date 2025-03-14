@@ -15,6 +15,7 @@ import io.camunda.zeebe.spring.client.EnableZeebeClient;
 @EnableZeebeClient
 public class StatusRestController {
 
+    @Qualifier("zeebeClientLifecycle")
     @Autowired
     private ZeebeClient client;
 
