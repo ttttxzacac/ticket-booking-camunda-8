@@ -29,7 +29,8 @@ public class TicketBookingRestController {
 
   private Logger logger = LoggerFactory.getLogger(RetrievePaymentAdapter.class);
 
-    @Qualifier("zeebeClientObjectFactory")
+
+    @Qualifier("zeebeClientLifecycle")
     @Autowired
   private ZeebeClient client;
 
