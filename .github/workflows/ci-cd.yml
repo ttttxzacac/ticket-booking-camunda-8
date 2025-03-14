@@ -51,6 +51,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+
       - name: Log in to Amazon ECR
         run: |
           aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}
@@ -63,20 +64,20 @@ jobs:
           docker push ${{ secrets.ECR_REGISTRY }}/ticket-booking/ticket-booking-repo:booking-service-latest
         working-directory: booking-service-java
 
-      # Build & push the Node.js (TypeScript) Docker image
-      - name: Build and Push Node.js Docker Image
-        run: |
-          docker build -t fake-services-nodejs .
-          docker tag fake-services-nodejs:latest ${{ secrets.ECR_REGISTRY }}/ticket-booking/ticket-booking-repo:fake-services-nodejs-latest
-          docker push ${{ secrets.ECR_REGISTRY }}/ticket-booking/ticket-booking-repo:fake-services-nodejs-latest
-        working-directory: fake-services-nodejs
+#      # Build & push the Node.js (TypeScript) Docker image
+#      - name: Build and Push Node.js Docker Image
+#        run: |
+#          docker build -t fake-services-nodejs .
+#          docker tag fake-services-nodejs:latest ${{ secrets.ECR_REGISTRY }}/ticket-booking/ticket-booking-repo:fake-services-nodejs-latest
+#          docker push ${{ secrets.ECR_REGISTRY }}/ticket-booking/ticket-booking-repo:fake-services-nodejs-latest
+#        working-directory: fake-services-nodejs
 
       #  Build & push the RabbitMQ Docker image (using the official RabbitMQ image)
-      - name: Build and Push RabbitMQ Docker Image
-        run: |
-          docker pull rabbitmq:3-management
-          docker tag rabbitmq:3-management ${{ secrets.ECR_REGISTRY }}/ticket-booking/ticket-booking-repo:rabbitmq-latest
-          docker push ${{ secrets.ECR_REGISTRY }}/ticket-booking/ticket-booking-repo:rabbitmq-latest
+#      - name: Build and Push RabbitMQ Docker Image
+#        run: |
+#          docker pull rabbitmq:3-management
+#          docker tag rabbitmq:3-management ${{ secrets.ECR_REGISTRY }}/ticket-booking/ticket-booking-repo:rabbitmq-latest
+#          docker push ${{ secrets.ECR_REGISTRY }}/ticket-booking/ticket-booking-repo:rabbitmq-latest
 
 
 
@@ -91,26 +92,75 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+#      # Deploy RabbitMQ service to ECS (no longer needed)
+#      - name: Deploy RabbitMQ Service to ECS
+#        run: |
+#          aws ecs update-service --cluster ${{ secrets.ECS_CLUSTER_NAME }} --service rabbitmq-service --force-new-deployment --desired-count 1
 
-      #  Deploy RabbitMQ service to ECS
-      - name: Deploy RabbitMQ Service to ECS
-        run: |
-          aws ecs update-service --cluster ${{ secrets.ECS_CLUSTER_NAME }} --service rabbitmq-service --force-new-deployment --desired-count 1
+#     # Wait for RabbitMQ to finish (no longer needed)
+      # - name: Wait for RabbitMQ Service to be stable
+      #  run: |
+      #    aws ecs wait services-stable --cluster ${{ secrets.ECS_CLUSTER_NAME }} --services rabbitmq-service
 
-      # wait RabbitMQ to finish
-      - name: Wait for RabbitMQ Service to be stable
-        run: |
-          aws ecs wait services-stable --cluster ${{ secrets.ECS_CLUSTER_NAME }} --services rabbitmq-service
-
-
+      # Deploy Java Service to ECS
       - name: Deploy Java Service to ECS
         run: |
           aws ecs update-service --cluster ${{ secrets.ECS_CLUSTER_NAME }} --service booking-service-java --force-new-deployment --desired-count 1
-      
-      - name: Deploy Node.js Service to ECS
-        run: |
-          aws ecs update-service --cluster ${{ secrets.ECS_CLUSTER_NAME }} --service fake-services-nodejs --force-new-deployment --desired-count 1
 
+#      # Deploy Node.js Service to ECS.
+#      - name: Deploy Node.js Service to ECS
+#        run: |
+#          aws ecs update-service --cluster ${{ secrets.ECS_CLUSTER_NAME }} --service fake-services-nodejs --force-new-deployment --desired-count 2
+
+      # Configure Auto Scaling for Java Service
+      - name: Configure Auto Scaling for Java(Booking) Service
+        run: |
+          aws application-autoscaling register-scalable-target \
+            --service-namespace ecs \
+            --scalable-dimension ecs:service:DesiredCount \
+            --resource-id service/${{ secrets.ECS_CLUSTER_NAME }}/booking-service-java \
+            --min-capacity 1 \
+            --max-capacity 2
+          
+          aws application-autoscaling put-scaling-policy \
+            --service-namespace ecs \
+            --scalable-dimension ecs:service:DesiredCount \
+            --resource-id service/${{ secrets.ECS_CLUSTER_NAME }}/booking-service-java \
+            --policy-name Scale-out-on-high-CPU-usage \
+            --policy-type TargetTrackingScaling \
+            --target-tracking-scaling-policy-configuration '{
+              "TargetValue": 80.0,
+              "PredefinedMetricSpecification": {
+                "PredefinedMetricType": "ECSServiceAverageCPUUtilization"
+              },
+              "ScaleOutCooldown": 60,
+              "ScaleInCooldown": 60
+            }'
+
+#      # Configure Auto Scaling for Node.js Service
+#      - name: Configure Auto Scaling for Node.js Service
+#        run: |
+#          aws application-autoscaling register-scalable-target \
+#            --service-namespace ecs \
+#            --scalable-dimension ecs:service:DesiredCount \
+#            --resource-id service/${{ secrets.ECS_CLUSTER_NAME }}/fake-services-nodejs \
+#            --min-capacity 2 \
+#            --max-capacity 5
+#
+#          aws application-autoscaling put-scaling-policy \
+#            --service-namespace ecs \
+#            --scalable-dimension ecs:service:DesiredCount \
+#            --resource-id service/${{ secrets.ECS_CLUSTER_NAME }}/fake-services-nodejs \
+#            --policy-name cpu-scaling-Scale-out-on-high-CPU-usage \
+#            --policy-type TargetTrackingScaling \
+#            --target-tracking-scaling-policy-configuration '{
+#              "TargetValue": 80.0,
+#              "PredefinedMetricSpecification": {
+#                "PredefinedMetricType": "ECSServiceAverageCPUUtilization"
+#              },
+#              "ScaleOutCooldown": 60,
+#              "ScaleInCooldown": 60
+#            }'
 
 
 
