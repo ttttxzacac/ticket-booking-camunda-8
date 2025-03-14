@@ -1,6 +1,7 @@
 package io.berndruecker.ticketbooking.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,7 +14,8 @@ import io.camunda.zeebe.spring.client.EnableZeebeClient;
 @RestController
 @EnableZeebeClient
 public class StatusRestController {
-    
+
+    @Qualifier("zeebeClientLifecycle")
     @Autowired
     private ZeebeClient client;
 
