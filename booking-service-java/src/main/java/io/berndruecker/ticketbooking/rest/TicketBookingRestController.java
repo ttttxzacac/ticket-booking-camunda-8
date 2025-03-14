@@ -30,8 +30,8 @@ public class TicketBookingRestController {
   private Logger logger = LoggerFactory.getLogger(RetrievePaymentAdapter.class);
 
 
-    @Qualifier("zeebeClientLifecycle")
-    @Autowired
+
+  @Autowired
   private ZeebeClient client;
 
   @PutMapping("/ticket")
