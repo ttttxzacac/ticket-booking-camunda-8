@@ -19,7 +19,9 @@ import software.amazon.awssdk.regions.Region;
 @Deployment(resources = { "classpath:ticket-booking.bpmn" })
 public class TicketBookingApplication {
 
+
   public static void main(String[] args) {
+    System.out.println("running 1");
     SpringApplication.run(TicketBookingApplication.class, args);
   }
 
