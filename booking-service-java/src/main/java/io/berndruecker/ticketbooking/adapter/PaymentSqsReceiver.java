@@ -3,6 +3,7 @@ package io.berndruecker.ticketbooking.adapter;
 import java.util.Collections;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -38,25 +39,27 @@ public class PaymentSqsReceiver {
     this.sqsClient = sqsClient;
   }
 
-  // Periodically poll SQS (executed every 3 seconds)
-  @Scheduled(fixedRate = 3000)
+  // Periodically poll SQS (executed every 1 seconds)
+  @Scheduled(fixedRate = 1000)
   @Transactional
   public void pollSqsMessages() {
     // 1. Get messages from SQS
-    logger.info("Polling SQS");
     ReceiveMessageRequest receiveMessageRequest = ReceiveMessageRequest.builder()
             .queueUrl(paymentResponseQueueUrl)
             .maxNumberOfMessages(4)
             .waitTimeSeconds(2)
             .build();
-
     List<Message> messages = sqsClient.receiveMessage(receiveMessageRequest).messages();
 
     for (Message message : messages) {
       try {
         logger.info("Received message: " + message);
+
         // 2. Parsing the message
-        PaymentResponseMessage paymentResponse = objectMapper.readValue(message.body(), PaymentResponseMessage.class);
+        JsonNode rootNode = objectMapper.readTree(message.body());
+        String innerJson = rootNode.get("message").asText();
+        PaymentResponseMessage paymentResponse = objectMapper.readValue(innerJson, PaymentResponseMessage.class);
+    //  PaymentResponseMessage paymentResponse = objectMapper.readValue(message.body(), PaymentResponseMessage.class);
         logger.info("Received: " + paymentResponse);
 
         // 3. Send a message to Zeebe Workflow
