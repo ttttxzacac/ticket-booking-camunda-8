@@ -71,6 +71,7 @@ public class TicketBookingRestController {
 
       // of course we can run into a timeout if the workflow does not finish
       // within that timeframe!
+      logger.error(ex.getMessage());
       logger.error("Timeout on waiting for workflow"); //, ex);
 
       return ResponseEntity.status(HttpStatus.ACCEPTED).build();
