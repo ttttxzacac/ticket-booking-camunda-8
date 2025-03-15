@@ -14,6 +14,8 @@ import io.camunda.zeebe.spring.client.EnableZeebeClient;
 import io.camunda.zeebe.spring.client.annotation.ZeebeDeployment;
 import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.http.urlconnection.UrlConnectionHttpClient;
+
 @SpringBootApplication
 @EnableZeebeClient
 @Deployment(resources = { "classpath:ticket-booking.bpmn" })
@@ -38,6 +40,7 @@ public class TicketBookingApplication {
   @Bean
   public SqsClient sqsClient(@Value("${aws.region:eu-central-1}") String awsRegion) {
     return SqsClient.builder()
+            .httpClient(UrlConnectionHttpClient.create())
             .region(Region.of(awsRegion))
             .build();
   }
