@@ -83,9 +83,9 @@ public class PaymentSqsReceiver {
   }
 
   public static class PaymentResponseMessage {
-    @JsonProperty("requestId")
+    @JsonProperty("paymentRequestId")
     public String paymentRequestId;
-    @JsonProperty("confirmationId")
+    @JsonProperty("paymentConfirmationId")
     public String paymentConfirmationId;
 
     @Override
