@@ -18,6 +18,7 @@ import software.amazon.awssdk.services.sqs.model.ReceiveMessageRequest;
 import software.amazon.awssdk.services.sqs.model.DeleteMessageRequest;
 
 import io.camunda.zeebe.client.ZeebeClient;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Component
 public class PaymentSqsReceiver {
@@ -53,6 +54,7 @@ public class PaymentSqsReceiver {
 
     for (Message message : messages) {
       try {
+        logger.info("Received message: " + message);
         // 2. Parsing the message
         PaymentResponseMessage paymentResponse = objectMapper.readValue(message.body(), PaymentResponseMessage.class);
         logger.info("Received: " + paymentResponse);
@@ -78,7 +80,9 @@ public class PaymentSqsReceiver {
   }
 
   public static class PaymentResponseMessage {
+    @JsonProperty("requestId")
     public String paymentRequestId;
+    @JsonProperty("confirmationId")
     public String paymentConfirmationId;
 
     @Override
