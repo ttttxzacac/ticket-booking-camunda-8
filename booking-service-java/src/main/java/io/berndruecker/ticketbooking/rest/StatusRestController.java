@@ -11,6 +11,7 @@ import io.camunda.zeebe.client.ZeebeClient;
 import io.camunda.zeebe.client.api.response.Topology;
 import io.camunda.zeebe.spring.client.EnableZeebeClient;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @SpringBootConfiguration
 @RestController
@@ -22,6 +23,10 @@ public class StatusRestController {
 
     @Autowired
     private RestTemplate restTemplate;
+
+    @Autowired
+    private WebClient webClient ;
+
 
     @GetMapping("/status")
     public String getStatus() {
@@ -41,6 +46,19 @@ public class StatusRestController {
         String ENDPOINT = "https://p7biv6lqa2.execute-api.eu-central-1.amazonaws.com/default/ticket-generate-tianshen";
         GenerateTicketAdapter.CreateTicketResponse ticket = restTemplate.getForObject(ENDPOINT, GenerateTicketAdapter.CreateTicketResponse.class);
         return ticket.ticketId;
+    }
+
+    @GetMapping("/status4")
+    public String getStatus4() {
+        String ENDPOINT = "https://p7biv6lqa2.execute-api.eu-central-1.amazonaws.com/default/ticket-generate-tianshen";
+
+        GenerateTicketAdapter.CreateTicketResponse ticket = webClient.get()
+                .uri(ENDPOINT)
+                .retrieve()
+                .bodyToMono(GenerateTicketAdapter.CreateTicketResponse.class)
+                .block(); //
+
+        return ticket != null ? ticket.ticketId : "No Ticket ID Received";
     }
 
     
