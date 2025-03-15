@@ -8,6 +8,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.client.RestTemplate;
 
 import io.camunda.zeebe.spring.client.EnableZeebeClient;
@@ -17,6 +18,7 @@ import software.amazon.awssdk.regions.Region;
 @SpringBootApplication
 @EnableZeebeClient
 @Deployment(resources = { "classpath:ticket-booking.bpmn" })
+@EnableScheduling
 public class TicketBookingApplication {
 
 
