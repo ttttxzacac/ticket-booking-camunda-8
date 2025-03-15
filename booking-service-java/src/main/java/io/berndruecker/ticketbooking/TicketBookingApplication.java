@@ -13,6 +13,7 @@ import org.springframework.web.client.RestTemplate;
 
 import io.camunda.zeebe.spring.client.EnableZeebeClient;
 import io.camunda.zeebe.spring.client.annotation.ZeebeDeployment;
+import org.springframework.web.reactive.function.client.WebClient;
 import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.regions.Region;
 @SpringBootApplication
@@ -41,6 +42,14 @@ public class TicketBookingApplication {
   public SqsClient sqsClient(@Value("${aws.region:eu-central-1}") String awsRegion) {
     return SqsClient.builder()
             .region(Region.of(awsRegion))
+            .build();
+  }
+
+  @Bean
+  public WebClient webClient() {
+    return WebClient.builder()
+            .baseUrl("https://api.example.com") // 可以配置Base URL
+            .defaultHeader("Authorization", "Bearer YOUR_ACCESS_TOKEN") // 默认Header
             .build();
   }
 
