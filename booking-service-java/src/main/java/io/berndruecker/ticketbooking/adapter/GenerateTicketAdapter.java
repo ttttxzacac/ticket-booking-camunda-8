@@ -38,11 +38,14 @@ public class GenerateTicketAdapter {
       throw new IOException("[Simulated] Could not connect to HTTP server");
       
     } else {
-      
+      String rawResponse = restTemplate.getForObject(ENDPOINT, String.class);
+      logger.info("Raw API Response: " + rawResponse);
+
+
       // Call REST API, simply returns a ticketId
       logger.info("Calling " + ENDPOINT);
       CreateTicketResponse ticket = restTemplate.getForObject(ENDPOINT, CreateTicketResponse.class);  
-      logger.info("Succeeded with " + ticket);
+      logger.info("Succeeded with " + ticket.ticketId);
 
       return Collections.singletonMap(ProcessConstants.VAR_TICKET_ID, ticket.ticketId);
     }
