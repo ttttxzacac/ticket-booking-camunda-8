@@ -51,6 +51,12 @@
 			<groupId>software.amazon.awssdk</groupId>
 			<artifactId>sqs</artifactId>
 			<version>2.20.132</version>
+			<exclusions>
+				<exclusion>
+					<groupId>software.amazon.awssdk</groupId>
+					<artifactId>netty-nio-client</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
