@@ -63,8 +63,11 @@ public class TicketBookingRestController {
 
       // Unwrap data from workflow after it finished
       response.reservationId = (String) workflowInstanceResult.getVariablesAsMap().get(ProcessConstants.VAR_RESERVATION_ID);
+      logger.info("reservationId is processed"+response.reservationId);
       response.paymentConfirmationId = (String) workflowInstanceResult.getVariablesAsMap().get(ProcessConstants.VAR_PAYMENT_CONFIRMATION_ID);
+      logger.info("paymentConfirmation is processed"+response.paymentConfirmationId);
       response.ticketId = (String) workflowInstanceResult.getVariablesAsMap().get(ProcessConstants.VAR_TICKET_ID);
+      logger.info("generate ticket is processed"+response.ticketId);
       
       return ResponseEntity.status(HttpStatus.OK).body(response);
     } catch (ClientStatusException ex) {
