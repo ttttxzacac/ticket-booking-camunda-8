@@ -61,5 +61,13 @@ public class StatusRestController {
         return ticket != null ? ticket.ticketId : "No Ticket ID Received";
     }
 
+    @GetMapping("/status5")
+    public String getStatus5() {
+        String ENDPOINT = "https://spwwlr7zk9.execute-api.eu-central-1.amazonaws.com/stage1/";
+        GenerateTicketAdapter.CreateTicketResponse ticket = restTemplate.getForObject(ENDPOINT, GenerateTicketAdapter.CreateTicketResponse.class);
+        return ticket.ticketId;
+    }
+
+
     
 }
