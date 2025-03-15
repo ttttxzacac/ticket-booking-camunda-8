@@ -31,17 +31,18 @@ public class PaymentSqsReceiver {
   @Value("${aws.sqs.paymentResponseQueueUrl}")
   private String paymentResponseQueueUrl;
 
-  public PaymentSqsReceiver(@Qualifier("zeebeClientLifecycle") ZeebeClient client, ObjectMapper objectMapper, SqsClient sqsClient) {
+  public PaymentSqsReceiver(ZeebeClient client, ObjectMapper objectMapper, SqsClient sqsClient) {
     this.client = client;
     this.objectMapper = objectMapper;
     this.sqsClient = sqsClient;
   }
 
-  // Periodically poll SQS (executed every 5 seconds)
-  @Scheduled(fixedRate = 5000)
+  // Periodically poll SQS (executed every 3 seconds)
+  @Scheduled(fixedRate = 3000)
   @Transactional
   public void pollSqsMessages() {
     // 1. Get messages from SQS
+    logger.info("Polling SQS");
     ReceiveMessageRequest receiveMessageRequest = ReceiveMessageRequest.builder()
             .queueUrl(paymentResponseQueueUrl)
             .maxNumberOfMessages(4)
