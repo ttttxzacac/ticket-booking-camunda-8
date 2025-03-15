@@ -23,7 +23,7 @@ public class GenerateTicketAdapter {
 
   //  public static String ENDPOINT = "http://localhost:3000/ticket";
   //public static String ENDPOINT = "http://fake-services-nodejs.ticketbooking.local:3000/ticket";
-  public static String ENDPOINT = "https://afxe2qo704.execute-api.eu-central-1.amazonaws.com/v1/ticket";
+  public static String ENDPOINT = "https://2cwlibtqjh.execute-api.eu-central-1.amazonaws.com/default/ticket-generate-tianshen";
 
   @Autowired
   private RestTemplate restTemplate;
