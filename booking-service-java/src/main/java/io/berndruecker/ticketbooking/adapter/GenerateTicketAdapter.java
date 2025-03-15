@@ -40,6 +40,7 @@ public class GenerateTicketAdapter {
     } else {
       
       // Call REST API, simply returns a ticketId
+      logger.info("Calling " + ENDPOINT);
       CreateTicketResponse ticket = restTemplate.getForObject(ENDPOINT, CreateTicketResponse.class);  
       logger.info("Succeeded with " + ticket);
 
