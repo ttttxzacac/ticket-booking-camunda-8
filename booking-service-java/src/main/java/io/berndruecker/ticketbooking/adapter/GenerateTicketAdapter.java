@@ -1,5 +1,7 @@
 package io.berndruecker.ticketbooking.adapter;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.berndruecker.ticketbooking.ProcessConstants;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.spring.client.annotation.JobWorker;
@@ -38,13 +40,17 @@ public class GenerateTicketAdapter {
       throw new IOException("[Simulated] Could not connect to HTTP server");
       
     } else {
+      // Call REST API, simply returns a ticketId
+      logger.info("Calling " + ENDPOINT);
+
       String rawResponse = restTemplate.getForObject(ENDPOINT, String.class);
       logger.info("Raw API Response: " + rawResponse);
 
-
-      // Call REST API, simply returns a ticketId
-      logger.info("Calling " + ENDPOINT);
-      CreateTicketResponse ticket = restTemplate.getForObject(ENDPOINT, CreateTicketResponse.class);  
+      // Parse the outer JSON response
+      ObjectMapper objectMapper = new ObjectMapper();
+      ApiResponse apiResponse = objectMapper.readValue(rawResponse, ApiResponse.class);
+      CreateTicketResponse ticket = objectMapper.readValue(apiResponse.body, CreateTicketResponse.class);
+//      CreateTicketResponse ticket = restTemplate.getForObject(ENDPOINT, CreateTicketResponse.class);
       logger.info("Succeeded with " + ticket.ticketId);
 
       return Collections.singletonMap(ProcessConstants.VAR_TICKET_ID, ticket.ticketId);
@@ -52,6 +58,19 @@ public class GenerateTicketAdapter {
   }
 
   public static class CreateTicketResponse {
+    @JsonProperty("ticketId")
     public String ticketId;
   }
+
+  public static class ApiResponse {
+    @JsonProperty("statusCode")
+    public int statusCode;
+
+    @JsonProperty("headers")
+    public Map<String, String> headers;
+
+    @JsonProperty("body")
+    public String body;
+  }
+
 }
