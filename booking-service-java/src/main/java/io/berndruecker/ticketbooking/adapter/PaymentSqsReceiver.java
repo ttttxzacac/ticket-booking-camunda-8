@@ -40,7 +40,7 @@ public class PaymentSqsReceiver {
   }
 
   // Periodically poll SQS (executed every 1 seconds)
-  @Scheduled(fixedRate = 1000)
+  @Scheduled(fixedRate = 10000) //10s
   @Transactional
   public void pollSqsMessages() {
     // 1. Get messages from SQS
@@ -63,6 +63,7 @@ public class PaymentSqsReceiver {
         logger.info("Received: " + paymentResponse);
 
         // 3. Send a message to Zeebe Workflow
+        // 可以改成异步的
         client.newPublishMessageCommand()
                 .messageName("msg-payment-received")
                 .correlationKey(paymentResponse.paymentRequestId)
