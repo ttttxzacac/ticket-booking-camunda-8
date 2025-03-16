@@ -19,10 +19,10 @@ import software.amazon.awssdk.services.sqs.model.Message;
 import software.amazon.awssdk.services.sqs.model.ReceiveMessageRequest;
 import software.amazon.awssdk.services.sqs.model.DeleteMessageRequest;
 
-//batch delete
-import software.amazon.awssdk.services.sqs.model.DeleteMessageBatchRequestEntry;
-import software.amazon.awssdk.services.sqs.model.DeleteMessageBatchRequest;
-import software.amazon.awssdk.services.sqs.model.DeleteMessageBatchResult;
+// //batch delete
+// import software.amazon.awssdk.services.sqs.model.DeleteMessageBatchRequestEntry;
+// import software.amazon.awssdk.services.sqs.model.DeleteMessageBatchRequest;
+// import software.amazon.awssdk.services.sqs.model.DeleteMessageBatchResult;
 
 import io.camunda.zeebe.client.ZeebeClient;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -87,40 +87,39 @@ public class PaymentSqsReceiver {
                 .send()
                 .thenRun(() -> logger.info("Message sent successfully"));
 
-        // // 4. Delete the SQS message after successful processing
-        // sqsClient.deleteMessage(DeleteMessageRequest.builder()
-        //         .queueUrl(paymentResponseQueueUrl)
-        //         .receiptHandle(message.receiptHandle())
-        //         .build());
-
-        // 4. Add the message to the batch delete list
-        deleteRequests.add(DeleteMessageBatchRequestEntry.builder()
-                .id(message.messageId())  // Unique identifier for the message
+        // 4. Delete the SQS message after successful processing
+        sqsClient.deleteMessage(DeleteMessageRequest.builder()
+                .queueUrl(paymentResponseQueueUrl)
                 .receiptHandle(message.receiptHandle())
                 .build());
+
+        // // 4. Add the message to the batch delete list
+        // deleteRequests.add(DeleteMessageBatchRequestEntry.builder()
+        //         .id(message.messageId())  // Unique identifier for the message
+        //         .receiptHandle(message.receiptHandle())
+        //         .build());
 
       } catch (Exception e) {
         logger.error("Error processing SQS message", e);
       }
     }
-    // Perform batch delete if there are any messages to delete
-    if (!deleteRequests.isEmpty()) {
-      try {
-        DeleteMessageBatchRequest batchRequest = DeleteMessageBatchRequest.builder()
-                .queueUrl(paymentResponseQueueUrl)
-                .entries(deleteRequests)
-                .build();
-        DeleteMessageBatchResult result = sqsClient.deleteMessageBatch(batchRequest);
-        if (!result.failed().isEmpty()) {
-          logger.error("Failed to delete some messages: " + result.failed());
-        } else {
-          logger.info("Successfully deleted messages from SQS.");
-        }
-      } catch (Exception e) {
-        logger.error("Error performing batch delete", e);
-      }
-    }
-
+    // // Perform batch delete if there are any messages to delete
+    // if (!deleteRequests.isEmpty()) {
+    //   try {
+    //     DeleteMessageBatchRequest batchRequest = DeleteMessageBatchRequest.builder()
+    //             .queueUrl(paymentResponseQueueUrl)
+    //             .entries(deleteRequests)
+    //             .build();
+    //     DeleteMessageBatchResult result = sqsClient.deleteMessageBatch(batchRequest);
+    //     if (!result.failed().isEmpty()) {
+    //       logger.error("Failed to delete some messages: " + result.failed());
+    //     } else {
+    //       logger.info("Successfully deleted messages from SQS.");
+    //     }
+    //   } catch (Exception e) {
+    //     logger.error("Error performing batch delete", e);
+    //   }
+    // }
     
   }
 
