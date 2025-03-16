@@ -46,14 +46,14 @@ public class PaymentSqsReceiver {
   }
 
   // Periodically poll SQS (executed every 1 seconds)
-  @Scheduled(fixedRate = 500)
+  @Scheduled(fixedRate = 5000)
   @Transactional
   public void pollSqsMessages() {
     // 1. Get messages from SQS
     ReceiveMessageRequest receiveMessageRequest = ReceiveMessageRequest.builder()
             .queueUrl(paymentResponseQueueUrl)
             .maxNumberOfMessages(4)
-            .waitTimeSeconds(1)
+            .waitTimeSeconds(45)
             .build();
     List<Message> messages = sqsClient.receiveMessage(receiveMessageRequest).messages();
 
