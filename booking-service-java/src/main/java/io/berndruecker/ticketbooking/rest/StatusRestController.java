@@ -34,47 +34,47 @@ public class StatusRestController {
         return topology.toString();
     }
 
+//    @GetMapping("/status2")
+//    public String getStatus2() {
+//         String ENDPOINT = "https://31htvbz10i.execute-api.eu-central-1.amazonaws.com/default/ticket-generate-tianshen";
+//        GenerateTicketAdapter.CreateTicketResponse ticket = restTemplate.getForObject(ENDPOINT, GenerateTicketAdapter.CreateTicketResponse.class);
+//        return ticket.ticketId;
+//    }
+//
+//    @GetMapping("/status3")
+//    public String getStatus3() {
+//        String ENDPOINT = "https://p7biv6lqa2.execute-api.eu-central-1.amazonaws.com/default/ticket-generate-tianshen";
+//        GenerateTicketAdapter.CreateTicketResponse ticket = restTemplate.getForObject(ENDPOINT, GenerateTicketAdapter.CreateTicketResponse.class);
+//        return ticket.ticketId;
+//    }
+//
+//    @GetMapping("/status4")
+//    public String getStatus4() {
+//        String ENDPOINT = "https://p7biv6lqa2.execute-api.eu-central-1.amazonaws.com/default/ticket-generate-tianshen";
+//
+//        GenerateTicketAdapter.CreateTicketResponse ticket = webClient.get()
+//                .uri(ENDPOINT)
+//                .retrieve()
+//                .bodyToMono(GenerateTicketAdapter.CreateTicketResponse.class)
+//                .block(); //
+//
+//        return ticket != null ? ticket.ticketId : "No Ticket ID Received";
+//    }
+
     @GetMapping("/status2")
     public String getStatus2() {
-         String ENDPOINT = "https://31htvbz10i.execute-api.eu-central-1.amazonaws.com/default/ticket-generate-tianshen";
-        GenerateTicketAdapter.CreateTicketResponse ticket = restTemplate.getForObject(ENDPOINT, GenerateTicketAdapter.CreateTicketResponse.class);
-        return ticket.ticketId;
-    }
-
-    @GetMapping("/status3")
-    public String getStatus3() {
-        String ENDPOINT = "https://p7biv6lqa2.execute-api.eu-central-1.amazonaws.com/default/ticket-generate-tianshen";
-        GenerateTicketAdapter.CreateTicketResponse ticket = restTemplate.getForObject(ENDPOINT, GenerateTicketAdapter.CreateTicketResponse.class);
-        return ticket.ticketId;
-    }
-
-    @GetMapping("/status4")
-    public String getStatus4() {
-        String ENDPOINT = "https://p7biv6lqa2.execute-api.eu-central-1.amazonaws.com/default/ticket-generate-tianshen";
-
-        GenerateTicketAdapter.CreateTicketResponse ticket = webClient.get()
-                .uri(ENDPOINT)
-                .retrieve()
-                .bodyToMono(GenerateTicketAdapter.CreateTicketResponse.class)
-                .block(); //
-
-        return ticket != null ? ticket.ticketId : "No Ticket ID Received";
-    }
-
-    @GetMapping("/status5")
-    public String getStatus5() {
         String ENDPOINT = "https://spwwlr7zk9.execute-api.eu-central-1.amazonaws.com/stage1/";
         GenerateTicketAdapter.CreateTicketResponse ticket = restTemplate.getForObject(ENDPOINT, GenerateTicketAdapter.CreateTicketResponse.class);
         return ticket.ticketId;
     }
 
-
-    @GetMapping("/status6")
-    public String getStatus6() {
-        String ENDPOINT = "https://nuar9tmik7.execute-api.eu-central-1.amazonaws.com/default/ticket-generate-tianshen";
-        GenerateTicketAdapter.CreateTicketResponse ticket = restTemplate.getForObject(ENDPOINT, GenerateTicketAdapter.CreateTicketResponse.class);
-        return ticket.ticketId;
-    }
+//
+//    @GetMapping("/status6")
+//    public String getStatus6() {
+//        String ENDPOINT = "https://nuar9tmik7.execute-api.eu-central-1.amazonaws.com/default/ticket-generate-tianshen";
+//        GenerateTicketAdapter.CreateTicketResponse ticket = restTemplate.getForObject(ENDPOINT, GenerateTicketAdapter.CreateTicketResponse.class);
+//        return ticket.ticketId;
+//    }
 
     
 }
