@@ -57,8 +57,8 @@ public class PaymentSqsReceiver {
             .build();
     List<Message> messages = sqsClient.receiveMessage(receiveMessageRequest).messages();
 
-    // List to store batch delete requests
-    List<DeleteMessageBatchRequestEntry> deleteRequests = new ArrayList<>();
+    // // List to store batch delete requests
+    // List<DeleteMessageBatchRequestEntry> deleteRequests = new ArrayList<>();
     
     for (Message message : messages) {
       try {
