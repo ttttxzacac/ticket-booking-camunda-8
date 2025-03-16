@@ -120,7 +120,7 @@ jobs:
             --scalable-dimension ecs:service:DesiredCount \
             --resource-id service/${{ secrets.ECS_CLUSTER_NAME }}/booking-service-java \
             --min-capacity 1 \
-            --max-capacity 2
+            --max-capacity 3
           
           aws application-autoscaling put-scaling-policy \
             --service-namespace ecs \
