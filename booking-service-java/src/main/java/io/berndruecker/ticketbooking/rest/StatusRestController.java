@@ -69,5 +69,12 @@ public class StatusRestController {
     }
 
 
+    @GetMapping("/status6")
+    public String getStatus6() {
+        String ENDPOINT = "https://nuar9tmik7.execute-api.eu-central-1.amazonaws.com/default/ticket-generate-tianshen";
+        GenerateTicketAdapter.CreateTicketResponse ticket = restTemplate.getForObject(ENDPOINT, GenerateTicketAdapter.CreateTicketResponse.class);
+        return ticket.ticketId;
+    }
+
     
 }
