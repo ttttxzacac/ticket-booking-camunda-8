@@ -47,7 +47,7 @@ public class PaymentSqsReceiver {
     ReceiveMessageRequest receiveMessageRequest = ReceiveMessageRequest.builder()
             .queueUrl(paymentResponseQueueUrl)
             .maxNumberOfMessages(4)
-            .waitTimeSeconds(20)
+            .waitTimeSeconds(60)
             .build();
     List<Message> messages = sqsClient.receiveMessage(receiveMessageRequest).messages();
 
