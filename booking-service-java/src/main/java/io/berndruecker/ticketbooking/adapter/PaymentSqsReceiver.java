@@ -63,7 +63,7 @@ public class PaymentSqsReceiver {
         // PaymentResponseMessage paymentResponse = objectMapper.readValue(message.body(), PaymentResponseMessage.class);
         logger.info("Received: " + paymentResponse);
 
-        3. Send a message to Zeebe Workflow
+        // 3. Send a message to Zeebe Workflow
         client.newPublishMessageCommand()
                 .messageName("msg-payment-received")
                 .correlationKey(paymentResponse.paymentRequestId)
